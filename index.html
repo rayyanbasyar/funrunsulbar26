@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cek Status Pendaftaran — Fun Run HUT Sulbar ke-22</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12302E;
+    --bg:#EEF3EC;
+    --card:#FFFFFF;
+    --teal:#0F8B8D;
+    --teal-dark:#0A5F60;
+    --gold:#E2A63B;
+    --coral:#E4572E;
+    --line: rgba(18,48,46,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(18,48,46,0.07) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 48px 20px 80px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px;height:1px;background:var(--teal-dark);
+  }
+  h1{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    font-size:clamp(28px, 5vw, 44px);
+    line-height:1.05;
+    margin: 14px 0 6px;
+    text-align:center;
+    max-width: 620px;
+  }
+  h1 span{color:var(--coral);}
+  .sub{
+    max-width:460px;
+    text-align:center;
+    color:#3E5C58;
+    font-size:15px;
+    margin-bottom:36px;
+  }
+
+  form{
+    width:100%;
+    max-width:440px;
+    display:flex;
+    gap:10px;
+    margin-bottom: 30px;
+  }
+  input[type=text]{
+    flex:1;
+    padding:15px 16px;
+    border-radius:10px;
+    border:2px solid var(--line);
+    background:var(--card);
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    outline:none;
+    transition: border-color .15s ease;
+  }
+  input[type=text]:focus{ border-color:var(--teal); }
+  button{
+    font-family:'Work Sans', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border:none;
+    border-radius:10px;
+    padding: 0 22px;
+    background:var(--ink);
+    color:#fff;
+    cursor:pointer;
+    transition: transform .12s ease, background .15s ease;
+  }
+  button:hover{ background:var(--teal-dark); }
+  button:active{ transform: scale(0.97); }
+  button:disabled{ opacity:.55; cursor:default; }
+
+  .hint{
+    font-size:12.5px;
+    color:#5A7873;
+    max-width:440px;
+    text-align:center;
+    margin-top:-18px;
+    margin-bottom:30px;
+  }
+
+  /* ===== BIB CARD ===== */
+  .bib{
+    width:100%;
+    max-width:440px;
+    background:var(--card);
+    border-radius:16px;
+    border:2px dashed var(--line);
+    padding: 28px 26px 24px;
+    position:relative;
+    opacity:0;
+    transform: translateY(10px);
+    animation: rise .45s ease forwards;
+    box-shadow: 0 10px 30px rgba(15,60,58,0.08);
+  }
+  @keyframes rise{
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .bib::before, .bib::after{
+    content:"";
+    position:absolute;
+    width:18px;height:18px;
+    background:var(--bg);
+    border-radius:50%;
+    top:-10px;
+  }
+  .bib::before{ left:24px; box-shadow: inset 0 0 0 2px var(--line); }
+  .bib::after{ right:24px; box-shadow: inset 0 0 0 2px var(--line); }
+
+  .bib-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:18px;
+  }
+  .bib-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#5A7873;
+    margin-bottom:4px;
+  }
+  .bib-nama{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    font-size:22px;
+  }
+  .bib-order{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:#5A7873;
+  }
+  .bib-kategori{
+    display:inline-block;
+    margin-top:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    background:var(--bg);
+    padding:4px 10px;
+    border-radius:999px;
+    color:var(--teal-dark);
+  }
+
+  .stamp{
+    margin-top: 10px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 12px 14px;
+    border-radius:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.04em;
+    animation: pop .3s ease .1s backwards;
+  }
+  @keyframes pop{
+    from{ transform: scale(0.85) rotate(-3deg); opacity:0; }
+    to{ transform: scale(1) rotate(0); opacity:1; }
+  }
+  .stamp .dot{ width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+  .st-lunas{ background:#E5F3E8; color:#1F7A3D; }
+  .st-lunas .dot{ background:#1F7A3D; }
+  .st-pending{ background:#FCF1DE; color:#96660F; }
+  .st-pending .dot{ background:var(--gold); }
+  .st-batal{ background:#FBE6E1; color:#B23A16; }
+  .st-batal .dot{ background:var(--coral); }
+  .st-notfound{ background:#EFEFEF; color:#5A5A5A; }
+  .st-notfound .dot{ background:#9A9A9A; }
+
+  .footer-note{
+    margin-top:44px;
+    font-size:12.5px;
+    color:#5A7873;
+    text-align:center;
+    max-width:400px;
+  }
+  .footer-note a{ color:var(--teal-dark); }
+
+  .loader{
+    width:16px;height:16px;
+    border:2px solid rgba(255,255,255,.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation: spin .7s linear infinite;
+    display:inline-block;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="eyebrow">HUT SULBAR KE-22</div>
+  <h1>Cek Status <span>Pendaftaran</span></h1>
+  <p class="sub">Masukkan email atau NIK yang kamu pakai saat mendaftar untuk melihat status pembayaran fun run-mu.</p>
+
+  <form id="checkForm">
+    <input type="text" id="query" placeholder="Email atau NIK" autocomplete="off" required>
+    <button type="submit" id="submitBtn">Cek</button>
+  </form>
+  <p class="hint">Status diperbarui otomatis oleh sistem — tidak perlu kirim bukti transfer ke panitia.</p>
+
+  <div id="result"></div>
+
+  <p class="footer-note">Ada kendala? Hubungi panitia di <a href="mailto:panitia@email.com">panitia@email.com</a></p>
+
+<script>
+  // ====== GANTI DENGAN URL WEB APP APPS SCRIPT KAMU ======
+  const WEBAPP_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_DEPLOYMENT_ID/exec';
+  // =========================================================
+
+  const form = document.getElementById('checkForm');
+  const input = document.getElementById('query');
+  const btn = document.getElementById('submitBtn');
+  const resultEl = document.getElementById('result');
+
+  function jsonp(url, params) {
+    return new Promise((resolve, reject) => {
+      const cbName = 'cb_' + Date.now();
+      window[cbName] = (data) => {
+        resolve(data);
+        delete window[cbName];
+        script.remove();
+      };
+      const qs = new URLSearchParams({ ...params, callback: cbName }).toString();
+      const script = document.createElement('script');
+      script.src = url + '?' + qs;
+      script.onerror = () => reject(new Error('Gagal menghubungi server'));
+      document.body.appendChild(script);
+    });
+  }
+
+  function statusClass(status) {
+    if (!status) return 'st-pending';
+    if (status.includes('LUNAS')) return 'st-lunas';
+    if (status.includes('MENUNGGU')) return 'st-pending';
+    return 'st-batal';
+  }
+
+  function render(data, query) {
+    if (!data.found) {
+      resultEl.innerHTML = `
+        <div class="bib">
+          <div class="stamp st-notfound"><span class="dot"></span> Data tidak ditemukan untuk "${query}"</div>
+        </div>`;
+      return;
+    }
+    const cls = statusClass(data.status);
+    resultEl.innerHTML = `
+      <div class="bib">
+        <div class="bib-row">
+          <div>
+            <div class="bib-label">Peserta</div>
+            <div class="bib-nama">${data.nama}</div>
+            <span class="bib-kategori">${data.kategori}</span>
+          </div>
+          <div style="text-align:right">
+            <div class="bib-label">Order ID</div>
+            <div class="bib-order">${data.order_id || '—'}</div>
+          </div>
+        </div>
+        <div class="stamp ${cls}"><span class="dot"></span> ${data.status}</div>
+      </div>`;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const q = input.value.trim();
+    if (!q) return;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span>';
+    resultEl.innerHTML = '';
+    try {
+      const data = await jsonp(WEBAPP_URL, { q });
+      render(data, q);
+    } catch (err) {
+      resultEl.innerHTML = `<div class="bib"><div class="stamp st-notfound"><span class="dot"></span> Gagal memuat data, coba lagi.</div></div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Cek';
+    }
+  });
+</script>
+</body>
+</html>
