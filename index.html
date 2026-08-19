@@ -321,13 +321,13 @@
 
 <script>
   // ====== GANTI DENGAN URL WEB APP APPS SCRIPT KAMU ======
-  const WEBAPP_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_DEPLOYMENT_ID/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwF75bf3Zkw0Q_um0lQk8DOvorCjQrlW4H8Z0w6uMkC2m6e3-PrujcYRpXUNh-nsCWxlA/exec';
   // =========================================================
 
   // ====== GANTI DENGAN URL "RAW" GAMBAR QRIS KAMU DI SINI ======
   // Contoh format setelah upload ke GitHub:
   // https://raw.githubusercontent.com/USERNAME/REPO/BRANCH_ATAU_COMMIT/nama-file-qris.jpeg
-  const QRIS_IMAGE_URL = 'GANTI_DENGAN_URL_RAW_GITHUB_QRIS_KAMU';
+  const QRIS_IMAGE_URL = 'https://github.com/rayyanbasyar/funrunsulbar26/blob/21859c138f42976216c04f23bdefc593ce206022/WhatsApp%20Image%202026-08-17%20at%2012.12.50.jpeg';
   // ================================================================
 
   const form = document.getElementById('checkForm');
@@ -376,7 +376,7 @@
       <div class="payment">
         <div class="payment-label">Total yang harus dibayar</div>
         <div class="nominal">Rp${nominalUtama}<span class="kode-unik">${kodeBagian}</span></div>
-        <div class="nominal-note">3 digit terakhir (<b>${kodeStr}</b>) adalah kode unik kamu — jangan dibulatkan, supaya panitia bisa mencocokkan pembayaranmu secara akurat.</div>
+        <div class="nominal-note">3 digit terakhir (<b>${kodeStr}</b>) adalah kode unik kamu - jangan dibulatkan, supaya panitia bisa mencocokkan pembayaranmu secara akurat.</div>
 
         <div class="qris-box">
           <img src="${QRIS_IMAGE_URL}" alt="QRIS Pembayaran ${data.nama}">
