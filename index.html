@@ -208,6 +208,85 @@
   }
   .footer-note a{ color:var(--teal-dark); }
 
+  /* ===== BAGIAN PEMBAYARAN ===== */
+  .payment{
+    margin-top:18px;
+    padding-top:18px;
+    border-top:1px dashed var(--line);
+  }
+  .payment-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:#5A7873;
+    margin-bottom:10px;
+  }
+  .nominal{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    font-size:30px;
+    color:var(--teal-dark);
+    margin-bottom:2px;
+  }
+  .nominal .kode-unik{ color:var(--coral); }
+  .nominal-note{
+    font-size:12px;
+    color:#5A7873;
+    margin-bottom:16px;
+  }
+  .qris-box{
+    text-align:center;
+    background:var(--bg);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:16px;
+  }
+  .qris-box img{
+    width:100%;
+    max-width:220px;
+    border-radius:8px;
+    background:#fff;
+    padding:8px;
+  }
+  .qris-box .qris-caption{
+    font-size:11.5px;
+    color:#5A7873;
+    margin-top:8px;
+  }
+  .bank-box{
+    background:var(--bg);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:13.5px;
+    line-height:1.7;
+  }
+  .bank-box b{ color:var(--ink); }
+  .bank-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin: 14px 0;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:#9AAFAB;
+    text-transform:uppercase;
+  }
+  .bank-divider::before, .bank-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .warning-note{
+    margin-top:12px;
+    font-size:12px;
+    color:#96660F;
+    background:#FCF1DE;
+    padding:10px 12px;
+    border-radius:8px;
+  }
+
   .loader{
     width:16px;height:16px;
     border:2px solid rgba(255,255,255,.4);
@@ -237,13 +316,19 @@
 
   <div id="result"></div>
 
-  <p class="footer-note">Ada kendala? Hubungi panitia di <a href="mailto:funrunsulbar@gmail.com">funrunsulbar@gmail.com</a></p>
-  <p class="footer-note">Atau Hubungi Nomor (Ilman) 085299949059 & (Panji) 082293646804</p>
+  <p class="footer-note">Ada kendala? Hubungi panitia di <a href="mailto:funrunsulbar.com">funrunsulbar@gmail.com</a></p>
+    <p class="footer-note">Atau Hubungi Nomor (Ilman) 085299949059 & (Panji) 082293646804</p>
 
 <script>
   // ====== GANTI DENGAN URL WEB APP APPS SCRIPT KAMU ======
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwpdgyfOknUfFYbP9ecqHg2W8hCisgOvjolQvVU5_dTyqDCYDsXdEpDZSfgfHIyruQFYw/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_DEPLOYMENT_ID/exec';
   // =========================================================
+
+  // ====== GANTI DENGAN URL "RAW" GAMBAR QRIS KAMU DI SINI ======
+  // Contoh format setelah upload ke GitHub:
+  // https://raw.githubusercontent.com/USERNAME/REPO/BRANCH_ATAU_COMMIT/nama-file-qris.jpeg
+  const QRIS_IMAGE_URL = 'GANTI_DENGAN_URL_RAW_GITHUB_QRIS_KAMU';
+  // ================================================================
 
   const form = document.getElementById('checkForm');
   const input = document.getElementById('query');
@@ -273,6 +358,43 @@
     return 'st-batal';
   }
 
+  function formatRupiah(angka) {
+    return 'Rp' + Number(angka).toLocaleString('id-ID');
+  }
+
+  function renderPembayaran(data) {
+    // Kalau sudah LUNAS (otomatis maupun manual), TIDAK tampilkan QRIS/rekening sama sekali
+    if (data.sudah_lunas || !data.nominal_bayar) return '';
+
+    const nominalStr = Number(data.nominal_bayar).toLocaleString('id-ID');
+    const kodeStr = data.kode_unik;
+    // Pisahkan 3 digit terakhir (kode unik) biar kelihatan beda warnanya
+    const nominalUtama = nominalStr.slice(0, -3);
+    const kodeBagian = nominalStr.slice(-3);
+
+    return `
+      <div class="payment">
+        <div class="payment-label">Total yang harus dibayar</div>
+        <div class="nominal">Rp${nominalUtama}<span class="kode-unik">${kodeBagian}</span></div>
+        <div class="nominal-note">3 digit terakhir (<b>${kodeStr}</b>) adalah kode unik kamu — jangan dibulatkan, supaya panitia bisa mencocokkan pembayaranmu secara akurat.</div>
+
+        <div class="qris-box">
+          <img src="${QRIS_IMAGE_URL}" alt="QRIS Pembayaran ${data.nama}">
+          <div class="qris-caption">Scan pakai GoPay/OVO/Dana/ShopeePay/m-banking apa saja yang support QRIS</div>
+        </div>
+
+        <div class="bank-divider">atau transfer manual</div>
+
+        <div class="bank-box">
+          Bank: <b>${data.bank_nama}</b><br>
+          No. Rekening: <b>${data.bank_norek}</b><br>
+          Atas Nama: <b>${data.bank_atasnama}</b>
+        </div>
+
+        <div class="warning-note">⚠️ Transfer/bayar PERSIS Rp${nominalStr} — jangan dibulatkan. Status akan berubah otomatis/diverifikasi panitia setelah nominal cocok.</div>
+      </div>`;
+  }
+
   function render(data, query) {
     if (!data.found) {
       resultEl.innerHTML = `
@@ -296,6 +418,7 @@
           </div>
         </div>
         <div class="stamp ${cls}"><span class="dot"></span> ${data.status}</div>
+        ${renderPembayaran(data)}
       </div>`;
   }
 
