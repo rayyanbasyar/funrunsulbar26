@@ -287,6 +287,66 @@
     border-radius:8px;
   }
 
+  /* ===== KARTU INFO RACEPACK (SUDAH LUNAS) ===== */
+  .racepack{
+    margin-top:18px;
+    padding-top:18px;
+    border-top:1px dashed var(--line);
+  }
+  .racepack-greeting{
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:16px;
+  }
+  .racepack-greeting b{ color:var(--teal-dark); }
+  .racepack-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .racepack-item{
+    background:var(--bg);
+    border-radius:10px;
+    padding:10px 12px;
+  }
+  .racepack-item .racepack-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#5A7873;
+    margin-bottom:3px;
+  }
+  .racepack-item .racepack-value{
+    font-weight:700;
+    font-size:14px;
+  }
+  .racepack-box{
+    background:var(--bg);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:13px;
+    line-height:1.7;
+  }
+  .racepack-box .racepack-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--teal-dark);
+    margin-bottom:6px;
+  }
+  .racepack-box b{ color:var(--ink); }
+  .racepack-note{
+    margin-top:10px;
+    font-size:12px;
+    color:#96660F;
+    background:#FCF1DE;
+    padding:10px 12px;
+    border-radius:8px;
+  }
+
   .loader{
     width:16px;height:16px;
     border:2px solid rgba(255,255,255,.4);
@@ -312,15 +372,15 @@
     <input type="text" id="query" placeholder="Email atau NIK" autocomplete="off" required>
     <button type="submit" id="submitBtn">Cek</button>
   </form>
-  <p class="hint">Status diperbarui manual oleh panitia - tidak perlu kirim bukti transfer ke panitia.</p>
+  <p class="hint">Status diperbarui manual oleh panitia. tidak perlu kirim bukti transfer ke panitia.</p>
 
   <div id="result"></div>
 
-  <p class="footer-note">Ada kendala? Hubungi panitia di <a href="mailto:funrunsulbar.com">funrunsulbar@gmail.com</a> <br>Atau Hubungi Nomor (Ilman) 085299949059 & (Panji) 082293646804</br></p>
+  <p class="footer-note">Ada kendala? Hubungi panitia di <a href="mailto:funrunsulbar@mail.com">funrunsulbar@mail.com</a><br>atau kontak WA admin (Ilman) 085299949059 & (Panji) 082293646804</p>
 
 <script>
   // ====== GANTI DENGAN URL WEB APP APPS SCRIPT KAMU ======
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbz_PDGhdcS3Aoho_4ahk-Gd1D32_P8TUJ3Q16x_etmLaYsalpmut8nLmAYOApMKhcgbUg/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbzIKLgaSqRvuneAIF_cYXBPRG3VSCgqLVknmldbfF2RCkFD10BzEnAamgcURkObHLeihw/exec';
   // =========================================================
 
   // ====== GANTI DENGAN URL "RAW" GAMBAR QRIS KAMU DI SINI ======
@@ -386,11 +446,40 @@
 
         <div class="bank-box">
           Bank: <b>${data.bank_nama}</b><br>
-          No. Rekening: <b>${data.bank_atasnama}</b><br>
-          Atas Nama: <b>${data.bank_norek}</b>
+          No. Rekening: <b>${data.bank_norek}</b><br>
+          Atas Nama: <b>${data.bank_atasnama}</b>
         </div>
 
-        <div class="warning-note">⚠️ Transfer/bayar PERSIS Rp${nominalStr} — jangan dibulatkan. Status akan berubah otomatis/diverifikasi panitia setelah nominal cocok.</div>
+        <div class="warning-note">⚠️ Transfer/bayar HARUS PERSIS Rp${nominalStr} - jangan dibulatkan. Status akan berubah otomatis/diverifikasi panitia JIKA NOMINAL SESUAI.</div>
+      </div>`;
+  }
+
+  function renderRacepack(data) {
+    // Cuma tampil kalau statusnya sudah LUNAS
+    if (!data.sudah_lunas) return '';
+
+    return `
+      <div class="racepack">
+        <p class="racepack-greeting">Pembayaranmu <b>sudah terverifikasi</b> — sampai jumpa di garis start, <b>${data.nama}</b>! 🏃 Race akan berlangsung pada <b>20 September 2026</b>.</p>
+
+        <div class="racepack-grid">
+          <div class="racepack-item">
+            <div class="racepack-label">Kategori</div>
+            <div class="racepack-value">${data.kategori}</div>
+          </div>
+          <div class="racepack-item">
+            <div class="racepack-label">Ukuran Jersey</div>
+            <div class="racepack-value">${data.ukuran_jersey || '—'}</div>
+          </div>
+        </div>
+
+        <div class="racepack-box">
+          <div class="racepack-title">Pengambilan Racepack</div>
+          <b>Tanggal:</b> 18 September 2026<br>
+          <b>Lokasi:</b> Kantor Bapperida Sulbar, Kompleks Perkantoran Gubernur Sulawesi Barat, Jl. Abdul Malik Pattana Endeng, Mamuju
+        </div>
+
+        <div class="racepack-note">⚠️ Wajib bawa <b>KTP</b> saat pengambilan racepack.</div>
       </div>`;
   }
 
@@ -418,6 +507,7 @@
         </div>
         <div class="stamp ${cls}"><span class="dot"></span> ${data.status}</div>
         ${renderPembayaran(data)}
+        ${renderRacepack(data)}
       </div>`;
   }
 
